@@ -5,7 +5,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+import com.mmarcos.elsantygame.componentes.Boton;
+import com.mmarcos.elsantygame.ui.GestorUI;
 
 public class PanelDeJuego extends JPanel implements Runnable {
 
@@ -32,9 +37,13 @@ public class PanelDeJuego extends JPanel implements Runnable {
 	public Raton raton = new Raton(this);
 	Sonido musica = new Sonido();
 	Sonido se = new Sonido();
+	GestorUI ui = new GestorUI(this);
 	Thread hiloDeJuego;
 	
 	//ENTIDADES Y OBJETOS
+	public Boton btnCerrar = new Boton(this);
+	public Boton btnMaximizar = new Boton(this);
+	public Boton btnMinimizar = new Boton(this);
 
 	//ESTADO DE JUEGO
 	public int pantallaActual;
@@ -61,6 +70,15 @@ public class PanelDeJuego extends JPanel implements Runnable {
 	
 	public void configuracionDeJuego() {
 		pantallaActual = PANTALLA_TITULO;
+		
+		btnCerrar.inicializar(this.anchoDePantalla - 60, 10, 50, 30);
+		btnCerrar.setTexto("X");
+		
+		btnMaximizar.inicializar(this.anchoDePantalla - 116, 10, 50, 30);
+		btnMaximizar.setTexto("⬜");
+		
+		btnMinimizar.inicializar(this.anchoDePantalla - 172, 10, 50, 30);
+		btnMinimizar.setTexto("-");
 	}
 
 	public void iniciarHiloDeJuego() {
@@ -114,6 +132,8 @@ public class PanelDeJuego extends JPanel implements Runnable {
 	}
 
 	public void actualizar() {
+		
+		actualizarBotonesVentana();
 
 		if(pantallaActual == PANTALLA_TITULO) {
 			
@@ -173,6 +193,7 @@ public class PanelDeJuego extends JPanel implements Runnable {
 		else {
 			
 			//UI
+			ui.dibujar(g2);
 			
 		}
 
@@ -187,4 +208,35 @@ public class PanelDeJuego extends JPanel implements Runnable {
 		g2.dispose();
 
 	}
+	
+	public void actualizarBotonesVentana() {
+		btnCerrar.actualizar();
+		btnMaximizar.actualizar();
+		btnMinimizar.actualizar();
+		
+		if(btnCerrar.isPresionado()) { System.exit(0); }
+
+        if(btnMaximizar.isPresionado()) {
+        	JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+            if(ventana != null) {
+
+                if ((ventana.getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH) {
+
+                    ventana.setExtendedState(JFrame.NORMAL);
+
+                } else { ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); }
+            }
+        }
+
+        if(btnMinimizar.isPresionado()) {
+        	JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+            if(ventana != null) {
+            	this.raton.CLICK =false;
+                ventana.setState(JFrame.ICONIFIED);
+            } 
+        }
+	}
+	
 }
