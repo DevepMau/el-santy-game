@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import com.mmarcos.elsantygame.baldosas.GestorDeBaldosas;
 import com.mmarcos.elsantygame.componentes.Boton;
 import com.mmarcos.elsantygame.ui.GestorUI;
 
@@ -32,18 +33,21 @@ public class PanelDeJuego extends JPanel implements Runnable {
 	public final int anchoMundo = tamañoDeBaldosa * maxColDeMundo;
 	public final int altoMundo = tamañoDeBaldosa * maxFilaDeMundo;
 
-	//SISTEMA
-	public Teclado teclado = new Teclado(this);
-	public Raton raton = new Raton(this);
-	Sonido musica = new Sonido();
-	Sonido se = new Sonido();
-	GestorUI ui = new GestorUI(this);
-	Thread hiloDeJuego;
-	
 	//ENTIDADES Y OBJETOS
 	public Boton btnCerrar = new Boton(this);
 	public Boton btnMaximizar = new Boton(this);
 	public Boton btnMinimizar = new Boton(this);
+	
+	//SISTEMA
+	public Teclado teclado = new Teclado(this);
+	public Raton raton = new Raton(this);
+	public Camara camara = new Camara(this);
+	Sonido musica = new Sonido();
+	Sonido se = new Sonido();
+	GestorUI ui = new GestorUI(this);
+	GestorDeBaldosas gdb = new GestorDeBaldosas(this);
+	Thread hiloDeJuego;
+	
 
 	//ESTADO DE JUEGO
 	public int pantallaActual;
@@ -69,7 +73,7 @@ public class PanelDeJuego extends JPanel implements Runnable {
 	}
 	
 	public void configuracionDeJuego() {
-		pantallaActual = PANTALLA_TITULO;
+		pantallaActual = PANTALLA_JUEGO;
 		
 		btnCerrar.inicializar(this.anchoDePantalla - 60, 10, 50, 30);
 		btnCerrar.setTexto("X");
@@ -139,7 +143,7 @@ public class PanelDeJuego extends JPanel implements Runnable {
 			
 		}
 		if(pantallaActual == PANTALLA_JUEGO) {
-			
+			camara.actualizar();
 		}
 		if(pantallaActual == PANTALLA_PAUSA) {
 		}
@@ -174,9 +178,7 @@ public class PanelDeJuego extends JPanel implements Runnable {
 
 	    g2.scale(escala, escala);
 		
-	    //DIBUJAR A PARTIR DE AQUI
-	    g2.setColor(Color.white);
-	    g2.drawRect(0, 0, this.anchoDePantalla, this.altoDePantalla);
+	    //DIBUJAR A PARTIR DE AQUI/////////////////////////////////
 		
 		//DEBUG
 		long drawStart = 0;
@@ -193,6 +195,7 @@ public class PanelDeJuego extends JPanel implements Runnable {
 		else {
 			
 			//UI
+			gdb.dibujar(g2);
 			ui.dibujar(g2);
 			
 		}
@@ -204,6 +207,10 @@ public class PanelDeJuego extends JPanel implements Runnable {
 			g2.setColor(Color.white);
 			g2.drawString("Draw Time: " + passed, 10, 400);
 		}
+		
+		//LIMITES DE PANTALLA
+		g2.setColor(Color.white);
+	    g2.drawRect(0, 0, this.anchoDePantalla, this.altoDePantalla);
 
 		g2.dispose();
 
