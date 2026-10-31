@@ -1,6 +1,5 @@
 package com.mmarcos.elsantygame.ui;
 
-import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
@@ -11,12 +10,13 @@ public class BotonUI {
 	Graphics2D g2;
 	public Boton model;
 	
-	public BotonUI(Boton model, Graphics2D g2) {
-		this.g2 = g2;
+	public BotonUI(Boton model) {
 		this.model = model;
 	}
 	
-	public void dibujar(float escalado) {
+	public void dibujar(float escalado, Graphics2D g2) {
+		this.g2 = g2;
+		
 		int x = model.getArea().x;
 		int y = model.getArea().y;
 		int ancho = model.getArea().width;

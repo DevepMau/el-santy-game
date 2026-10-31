@@ -9,10 +9,19 @@ public class GestorUI {
 	PanelDeJuego pdj;
 	Graphics2D g2;
 	
+	private BotonUI btnCerrar;
+	private BotonUI btnMaximizar;
+	private BotonUI btnMinimizar;
+	
 	public float escala;
 	
 	public GestorUI(PanelDeJuego pdj) {
 		this.pdj = pdj;
+		
+		btnCerrar = new BotonUI(pdj.btnCerrar);
+		btnMaximizar = new BotonUI(pdj.btnMaximizar);
+		btnMinimizar = new BotonUI(pdj.btnMinimizar);
+		
 	}
 	
 	public void dibujar(Graphics2D g2) {
@@ -25,13 +34,23 @@ public class GestorUI {
 		
 		escala = Math.min(escala, 1.10f);
 		
-		BotonUI btnCerrar = new BotonUI(pdj.btnCerrar, g2);
-		BotonUI btnMaximizar = new BotonUI(pdj.btnMaximizar, g2);
-		BotonUI btnMinimizar = new BotonUI(pdj.btnMinimizar, g2);
+		/////////////////////////////////////////////
 		
-		btnMinimizar.dibujar(escala);
-		btnMaximizar.dibujar(escala);
-		btnCerrar.dibujar(escala);
+		dibujarPantallaDeJuego();
+		
+		/////////////////////////////////////////////
+
+		g2.setColor(TemaUI.UI_NEGRO);
+		g2.fillRect(0 - pdj.tamañoDeBaldosa, 0, pdj.tamañoDeBaldosa, pdj.altoDePantalla);
+		g2.fillRect(pdj.anchoDePantalla, 0, pdj.tamañoDeBaldosa, pdj.altoDePantalla);
+		
+		btnMinimizar.dibujar(escala, g2);
+		btnMaximizar.dibujar(escala, g2);
+		btnCerrar.dibujar(escala, g2);
+	}
+	
+	private void dibujarPantallaDeJuego() {
+		pdj.camara.dibujar(g2);
 	}
 
 }
